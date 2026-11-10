@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a0d24">
+<title>MARIO PAKCI · Kerajaan yang Hilang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Latar animasi untuk registrasi & menu utama -->
+<canvas id="menuBg" width="800" height="450" aria-hidden="true"></canvas>
+
+<!-- ============ LAYAR 1: REGISTRASI PEMAIN ============ -->
+<section id="screenRegister" class="screen active">
+  <div class="reg-wrap">
+    <div class="mini-logo">◆ MARIO PAKCI ◆</div>
+    <form id="regForm" class="card reg-card" novalidate autocomplete="off">
+      <div class="card-tag">PENDAFTARAN PEMAIN</div>
+      <h1 class="reg-title">Siapa yang akan bertualang?</h1>
+      <p class="reg-sub">Isi data dirimu dulu sebelum masuk ke Kerajaan yang Hilang.</p>
+
+      <label class="field">
+        <span class="label">👤 Nama Pemain</span>
+        <input id="inName" type="text" maxlength="16" placeholder="Contoh: Budi Santoso" autocomplete="off">
+        <small class="err" id="errName"></small>
+      </label>
+
+      <label class="field">
+        <span class="label">🎂 Umur</span>
+        <input id="inAge" type="number" inputmode="numeric" min="5" max="99" placeholder="Contoh: 16">
+        <small class="err" id="errAge"></small>
+      </label>
+
+      <label class="field">
+        <span class="label">🏫 Asal Sekolah</span>
+        <input id="inSchool" type="text" maxlength="30" placeholder="Contoh: SMAN 1 Yogyakarta" autocomplete="off">
+        <small class="err" id="errSchool"></small>
+      </label>
+
+      <button type="submit" class="btn btn-gold btn-big">▶ MASUK KE GAME</button>
+      <p class="note">Data hanya disimpan di perangkat ini dan dipakai untuk papan peringkat.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ LAYAR 2: MENU UTAMA ============ -->
+<section id="screenMenu" class="screen">
+  <div class="menu-wrap">
+
+    <header class="menu-head">
+      <div class="tagline">★ PETUALANGAN PIKSEL ★</div>
+      <h1 class="logo" aria-label="Mario Pakci">
+        <span class="row row1" data-text="MARIO"></span>
+        <span class="row row2" data-text="PAKCI"></span>
+      </h1>
+      <p class="subtitle">KERAJAAN YANG HILANG</p>
+    </header>
+
+    <div class="menu-body">
+      <section class="card menu-panel">
+        <div class="board-head">🎮 MENU UTAMA</div>
+        <div class="player-badge">
+          <div class="avatar" id="menuAvatar">?</div>
+          <div class="who">
+            <b id="menuPlayerName">Pemain</b>
+            <small id="menuPlayerInfo"></small>
+          </div>
+          <div class="best">SKOR TERBAIK<b id="menuBest">0</b></div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn btn-gold btn-big" id="playBtn">▶ MULAI PETUALANGAN</button>
+          <button class="btn btn-cyan" id="selectBtn">◆ PILIH DUNIA</button>
+          <button class="btn btn-violet" id="howBtn">? CARA BERMAIN</button>
+          <button class="btn btn-ghost" id="changeBtn">↺ GANTI PEMAIN</button>
+          <button class="btn btn-ghost" id="menuMute">🔊 SUARA: NYALA</button>
+        </div>
+      </section>
+
+      <aside class="card board">
+        <div class="board-inner">
+          <div class="board-head">🏆 PAPAN PERINGKAT</div>
+          <p class="board-sub">10 pemain dengan poin tertinggi</p>
+          <ol id="boardList"></ol>
+          <p id="boardEmpty" class="board-empty">Belum ada skor tercatat.<br>Jadilah yang pertama di puncak!</p>
+          <div id="boardMe" class="board-me"></div>
+          <button class="link-btn" id="clearBoard">Reset peringkat</button>
+        </div>
+      </aside>
+    </div>
+
+    <p class="credit">Karakter asli · Visual piksel · Kontrol keyboard &amp; sentuh</p>
+  </div>
+
+  <!-- Modal pilih dunia -->
+  <div id="worldModal" class="modal hidden">
+    <div class="card modal-card">
+      <div class="modal-head"><span>PILIH DUNIA</span><button class="x-btn" data-close="worldModal" aria-label="Tutup">✕</button></div>
+      <div id="worldCards" class="world-cards"></div>
+    </div>
+  </div>
+
+  <!-- Modal cara bermain -->
+  <div id="howModal" class="modal hidden">
+    <div class="card modal-card">
+      <div class="modal-head"><span>CARA BERMAIN</span><button class="x-btn" data-close="howModal" aria-label="Tutup">✕</button></div>
+      <table class="how">
+        <tr><td><kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd></td><td>Bergerak kiri &amp; kanan</td></tr>
+        <tr><td><kbd>Spasi</kbd> / <kbd>W</kbd> / <kbd>↑</kbd></td><td>Lompat. Tekan <b>sekali lagi di udara</b> untuk <b>LOMPAT GANDA</b></td></tr>
+        <tr><td><kbd>Esc</kbd> / <kbd>P</kbd></td><td>Jeda permainan</td></tr>
+      </table>
+      <ul class="how-list">
+        <li>🪙 Koin = <b>+10</b> poin</li>
+        <li>👾 Injak musuh dari atas = <b>+100</b> poin</li>
+        <li>🔷 Orb perisai = kebal 10 detik, musuh hancur saat tersentuh</li>
+        <li>❤ Hati = tambah 1 nyawa (maks. 5)</li>
+        <li>🚩 Bendera = checkpoint, kamu kembali ke sini bila jatuh</li>
+        <li>⚠ Hindari duri dan jangan jatuh ke jurang</li>
+        <li>🌀 Capai portal untuk menyelesaikan dunia</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LAYAR 3: GAME ============ -->
+<section id="screenGame" class="screen">
+  <div class="brand">
+    <b>◆ MARIO PAKCI</b>
+    <span id="gamePlayer"></span>
+  </div>
+
+  <div id="frame">
+    <canvas id="game" width="800" height="450" aria-label="Area permainan Mario Pakci"></canvas>
+
+    <div id="hud">
+      <div class="hudbox" id="hudWorld"></div>
+      <div class="hudbox hud-lives" id="hudLives"></div>
+      <div class="hudbox" id="hudCoins"></div>
+      <div class="hudbox" id="hudScore"></div>
+      <div class="hudbox" id="hudRank"></div>
+      <div class="hudbox hud-power hidden" id="hudPower"></div>
+      <div class="hudbtns">
+        <button id="muteBtn" class="hud-btn" aria-label="Suara">🔊</button>
+        <button id="pauseBtn" class="hud-btn" aria-label="Jeda">Ⅱ</button>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+    <div id="progress"><i id="progressFill"></i></div>
+  </div>
+
+  <div id="touch">
+    <div class="touchgroup">
+      <button id="left" aria-label="Kiri">◀</button>
+      <button id="right" aria-label="Kanan">▶</button>
+    </div>
+    <div class="touchgroup">
+      <button id="jump" aria-label="Lompat">LOMPAT ↑</button>
+    </div>
+  </div>
+  <div class="tip">Tip: kamu punya <b>lompat ganda</b> — tekan lompat lagi saat di udara!</div>
+  <div class="rotate-hint">📱 Putar HP ke mode lanskap agar lebih nyaman bermain.</div>
+</section>
+
+<!-- Overlay jeda -->
+<div id="pauseMenu" class="overlay hidden">
+  <div class="card menu-card">
+    <div class="logo-sm">JEDA</div>
+    <p>Tarik napas dulu, petualang.</p>
+    <div class="buttons">
+      <button class="btn btn-gold" id="resumeBtn">▶ LANJUT</button>
+      <button class="btn btn-cyan" id="pauseRestart">↻ ULANGI DUNIA</button>
+      <button class="btn btn-violet" id="pauseHome">⌂ MENU UTAMA</button>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay akhir dunia / game over -->
+<div id="endMenu" class="overlay hidden">
+  <div class="card menu-card">
+    <div class="logo-sm" id="endTitle">DUNIA SELESAI!</div>
+    <p id="endText"></p>
+    <p id="endRank" class="end-rank"></p>
+    <div class="buttons">
+      <button class="btn btn-gold" id="endPrimary">LANJUT</button>
+      <button class="btn btn-cyan" id="endRetry">↻ ULANGI DUNIA</button>
+      <button class="btn btn-violet" id="endHome">⌂ MENU UTAMA</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
